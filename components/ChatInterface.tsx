@@ -12,11 +12,27 @@ import { getInitials } from "@/helpers/helpers";
 
 import { Message, continueConversation } from "@/app/actions";
 
+const OptionTile = ({
+  option,
+  onSelect,
+}: {
+  option: string;
+  onSelect: (option: string) => void;
+}) => (
+  <Button
+    onClick={() => onSelect(option)}
+    className="m-1 bg-gradient-to-r from-indigo-500 to-purple-500 text-white hover:from-indigo-600 hover:to-purple-600"
+  >
+    {option}
+  </Button>
+);
+
 export function ChatInterface() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [conversation, setConversation] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [options, setOptions] = useState<string[]>([]);
 
   const { data: session } = useSession();
 
@@ -49,6 +65,16 @@ export function ChatInterface() {
       for await (const delta of readStreamableValue(newMessage)) {
         textContent += delta;
 
+        const optionsMatch = textContent.match(/OPTIONS:\s*\[(.*?)\]/);
+        if (optionsMatch && optionsMatch[1]) {
+          const newOptions = optionsMatch[1]
+            .split(",")
+            .map((option) => option.trim());
+          console.log("Parsed options:", newOptions);
+          setOptions(newOptions);
+          textContent = textContent.replace(/OPTIONS:\s*\[.*?\]/, "").trim();
+        }
+
         setConversation((prev) => {
           const updatedMessages = [...prev];
           updatedMessages[updatedMessages.length - 1] = {
@@ -72,6 +98,14 @@ export function ChatInterface() {
       setIsLoading(false);
     }
   };
+
+  const handleOptionSelect = (option: string) => {
+    setInput(option);
+    handleSubmit({
+      preventDefault: () => {},
+    } as React.FormEvent<HTMLFormElement>);
+  };
+
   return (
     <>
       <main className="flex-grow overflow-auto p-4 lg:w-[40rem] mx-auto my-2">
@@ -121,6 +155,17 @@ export function ChatInterface() {
         <div ref={messagesEndRef} />
       </main>
       <footer className="p-4 border-t border-border">
+        {options.length > 0 && (
+          <div className="flex flex-wrap justify-center mb-4">
+            {options.map((option, index) => (
+              <OptionTile
+                key={index}
+                option={option}
+                onSelect={handleOptionSelect}
+              />
+            ))}
+          </div>
+        )}
         <form
           onSubmit={handleSubmit}
           className="flex items-center space-x-2 lg:max-w-[40rem] mx-auto"
