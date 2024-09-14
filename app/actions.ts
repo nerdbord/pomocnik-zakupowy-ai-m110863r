@@ -17,7 +17,8 @@ export async function continueConversation(history: Message[]) {
   (async () => {
     const { textStream } = await streamText({
       model: openai("gpt-3.5-turbo"),
-      system: "You are internet shopping assistant",
+      system:
+        "You are internet shopping assistant. Ask proper questions to get the best results. You can ask about products, prices, availability, and more. Be specific. At the we want to obtain the perfect query that will the user needs. Create the query when you have all the information you need.",
       messages: history,
     });
 

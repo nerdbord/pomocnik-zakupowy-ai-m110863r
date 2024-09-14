@@ -8,7 +8,7 @@ import { ThemeProvider, useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { MessageCircle, Sun, Moon, Loader2 } from "lucide-react";
+import { Sun, Moon, Loader2, ShoppingBag } from "lucide-react";
 
 function ChatInterface() {
   const [conversation, setConversation] = useState<Message[]>([]);
@@ -52,6 +52,8 @@ function ChatInterface() {
             ...assistantMessage,
             content: textContent,
           };
+          console.log(textContent);
+
           return updatedMessages;
         });
       }
@@ -76,7 +78,7 @@ function ChatInterface() {
           <div className="relative w-10 h-10">
             <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full shadow-lg transform -skew-x-6"></div>
             <div className="absolute inset-0 flex items-center justify-center">
-              <MessageCircle className="w-6 h-6 text-white" />
+              <ShoppingBag className="w-6 h-6 text-white" />
             </div>
           </div>
           <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-500">
