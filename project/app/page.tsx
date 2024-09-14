@@ -4,27 +4,18 @@ import { useState, useRef, useEffect } from "react";
 import { Message, continueConversation } from "./actions";
 import { readStreamableValue } from "ai/rsc";
 import { motion, AnimatePresence } from "framer-motion";
-import { SunIcon, MoonIcon, ShoppingBag } from "lucide-react";
+import { ThemeProvider, useTheme } from "next-themes";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { MessageCircle, Sun, Moon, Loader2 } from "lucide-react";
 
-export default function ChatInterface() {
+function ChatInterface() {
   const [conversation, setConversation] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const isDark = localStorage.getItem("darkMode") === "true";
-    setIsDarkMode(isDark);
-    document.documentElement.classList.toggle("dark", isDark);
-  }, []);
-
-  const toggleDarkMode = () => {
-    const newDarkMode = !isDarkMode;
-    setIsDarkMode(newDarkMode);
-    localStorage.setItem("darkMode", newDarkMode.toString());
-    document.documentElement.classList.toggle("dark", newDarkMode);
-  };
+  const { theme, setTheme } = useTheme();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -50,16 +41,13 @@ export default function ChatInterface() {
       let textContent = "";
       const assistantMessage: Message = { role: "assistant", content: "" };
 
-      // Add a placeholder for the assistant's message
       setConversation((prev) => [...prev, assistantMessage]);
 
       for await (const delta of readStreamableValue(newMessage)) {
         textContent += delta;
 
-        // Update the content of the assistant's message directly
         setConversation((prev) => {
           const updatedMessages = [...prev];
-          // Update the last message (the assistant's message)
           updatedMessages[updatedMessages.length - 1] = {
             ...assistantMessage,
             content: textContent,
@@ -82,34 +70,31 @@ export default function ChatInterface() {
   };
 
   return (
-    <div className={`flex flex-col h-screen ${isDarkMode ? "dark" : ""}`}>
-      <header className="bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-800 dark:to-purple-800 text-white p-4 flex justify-between items-center">
+    <div className="flex flex-col h-screen bg-primary text-foreground ">
+      <header className="flex items-center justify-between p-4 border-b border-border">
         <div className="flex items-center space-x-2">
           <div className="relative w-10 h-10">
-            <div className="absolute inset-0 bg-white dark:bg-gray-800 rounded-full shadow-lg transform -skew-x-6"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full shadow-lg transform -skew-x-6"></div>
             <div className="absolute inset-0 flex items-center justify-center">
-              <ShoppingBag className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+              <MessageCircle className="w-6 h-6 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500 dark:from-pink-400 dark:to-violet-400">
-            SHOPPY
-          </h1>
+          <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-500">
+            Shoppy
+          </span>
         </div>
-        <button
-          onClick={toggleDarkMode}
-          className="p-2 rounded-full hover:bg-indigo-500 dark:hover:bg-indigo-700 transition-colors duration-200"
-          aria-label={
-            isDarkMode ? "Switch to light mode" : "Switch to dark mode"
-          }
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          className="rounded-full text-primary-foreground hover: hover:bg-opacity-10"
         >
-          {isDarkMode ? (
-            <SunIcon className="w-6 h-6" />
-          ) : (
-            <MoonIcon className="w-6 h-6" />
-          )}
-        </button>
+          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          <span className="sr-only">Toggle theme</span>
+        </Button>
       </header>
-      <div className="flex-grow overflow-auto p-4 bg-gray-100 dark:bg-gray-800">
+      <main className="flex-grow overflow-auto p-4">
         <AnimatePresence>
           {conversation.map((message, index) => (
             <motion.div
@@ -118,72 +103,70 @@ export default function ChatInterface() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
-              className={`mb-4 ${
-                message.role === "user" ? "text-right" : "text-left"
-              }`}
+              className={`flex ${
+                message.role === "user" ? "justify-end" : "justify-start"
+              } mb-4`}
             >
               <div
-                className={`inline-block p-3 rounded-lg ${
-                  message.role === "user"
-                    ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white"
-                    : "bg-white text-gray-800 dark:bg-gray-700 dark:text-white"
+                className={`flex items-end ${
+                  message.role === "user" ? "flex-row-reverse" : "flex-row"
                 }`}
               >
-                {message.content}
+                <Avatar className="w-8 h-8 border">
+                  <AvatarFallback className="bg-primary text-primary-foreground">
+                    {message.role === "user" ? "U" : "AI"}
+                  </AvatarFallback>
+                </Avatar>
+                <div
+                  className={`mx-2 py-3 px-4 rounded-lg ${
+                    message.role === "user"
+                      ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white"
+                      : "bg-primary text-primary-foreground"
+                  }`}
+                >
+                  {message.content}
+                </div>
               </div>
             </motion.div>
           ))}
         </AnimatePresence>
         <div ref={messagesEndRef} />
-      </div>
-      <form
-        onSubmit={handleSubmit}
-        className="p-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700"
-      >
-        <div className="flex space-x-2">
-          <input
+      </main>
+      <footer className="p-4 border-t border-border">
+        <form onSubmit={handleSubmit} className="flex items-center space-x-2">
+          <Input
             type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
             placeholder="Type your message..."
-            className="flex-grow p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-            disabled={isLoading}
+            value={input}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setInput(e.target.value)
+            }
+            className="flex-grow text-primary-foreground"
           />
-          <button
+          <Button
             type="submit"
-            className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200 dark:from-indigo-500 dark:to-purple-500 dark:hover:from-indigo-600 dark:hover:to-purple-600 dark:focus:ring-indigo-400"
             disabled={isLoading}
+            className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-full px-6 py-2 font-semibold transition-all duration-200 hover:from-indigo-600 hover:to-purple-600"
           >
             {isLoading ? (
               <span className="flex items-center">
-                <svg
-                  className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Thinking...
               </span>
             ) : (
               "Send"
             )}
-          </button>
-        </div>
-      </form>
+          </Button>
+        </form>
+      </footer>
     </div>
+  );
+}
+
+export default function ThemeWrapper() {
+  return (
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <ChatInterface />
+    </ThemeProvider>
   );
 }
