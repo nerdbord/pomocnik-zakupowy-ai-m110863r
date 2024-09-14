@@ -18,7 +18,7 @@ export async function continueConversation(history: Message[]) {
     console.log("Starting conversation continuation"); // Debug log
 
     const { textStream } = await streamText({
-      model: openai("gpt-3.5-turbo"),
+      model: openai("gpt-4o"),
       system:
         "You are an internet shopping assistant. Ask proper questions to get the best results. You can ask about products, prices, availability, and more. Be specific. ALWAYS provide 2-4 options for the user to choose from by adding a line at the end of your message in the exact format 'OPTIONS: [option1, option2, option3]'. The OPTIONS line should be on a new line at the very end of your message. Create the final search query when you have all the information you need.",
       messages: history,
