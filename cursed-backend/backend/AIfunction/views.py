@@ -34,7 +34,7 @@ def scrape_and_process_url(url):
 def GIGAFUNCTION(request):
     if not request.GET:
         return HttpResponse('No query found')
-    elif request.GET.get('query', 'I want to buy a bicycle'):
+    elif request.GET.get('query', None):
         response = tavily_client.search(request.GET.get('query', 'I want to buy a bicycle'))
         webpages = [result['url'] for result in response['results']]
 
