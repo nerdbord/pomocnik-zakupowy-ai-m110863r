@@ -10,10 +10,20 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Sun, Moon, Loader2, ShoppingBag } from "lucide-react";
 
+const OptionTile = ({ option, onSelect }: { option: string; onSelect: (option: string) => void }) => (
+  <Button
+    onClick={() => onSelect(option)}
+    className="m-1 bg-gradient-to-r from-indigo-500 to-purple-500 text-white hover:from-indigo-600 hover:to-purple-600"
+  >
+    {option}
+  </Button>
+);
+
 function ChatInterface() {
   const [conversation, setConversation] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [options, setOptions] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { theme, setTheme } = useTheme();
 
@@ -32,6 +42,8 @@ function ChatInterface() {
     setConversation((prev) => [...prev, userMessage]);
     setInput("");
 
+    console.log("Sending conversation to server:", JSON.stringify([...conversation, userMessage], null, 2));
+
     try {
       const { newMessage } = await continueConversation([
         ...conversation,
@@ -46,16 +58,26 @@ function ChatInterface() {
       for await (const delta of readStreamableValue(newMessage)) {
         textContent += delta;
 
+        const optionsMatch = textContent.match(/OPTIONS:\s*\[(.*?)\]/);
+        if (optionsMatch && optionsMatch[1]) {
+          const newOptions = optionsMatch[1].split(',').map(option => option.trim());
+          console.log("Parsed options:", newOptions);
+          setOptions(newOptions);
+          textContent = textContent.replace(/OPTIONS:\s*\[.*?\]/, '').trim();
+        }
+
         setConversation((prev) => {
           const updatedMessages = [...prev];
           updatedMessages[updatedMessages.length - 1] = {
             ...assistantMessage,
             content: textContent,
           };
-
           return updatedMessages;
         });
       }
+
+      console.log("Final text content:", textContent);
+      console.log("Final options:", options);
     } catch (error) {
       console.error("Error in conversation:", error);
       setConversation((prev) => [
@@ -69,6 +91,13 @@ function ChatInterface() {
       setIsLoading(false);
     }
   };
+
+  const handleOptionSelect = (option: string) => {
+    setInput(option);
+    handleSubmit({ preventDefault: () => { } } as React.FormEvent<HTMLFormElement>);
+  };
+
+  console.log("Current options:", options);
 
   return (
     <div className="flex flex-col h-screen bg-primary text-foreground ">
@@ -104,14 +133,12 @@ function ChatInterface() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
-              className={`flex ${
-                message.role === "user" ? "justify-end" : "justify-start"
-              } mb-4`}
+              className={`flex ${message.role === "user" ? "justify-end" : "justify-start"
+                } mb-4`}
             >
               <div
-                className={`flex items-end ${
-                  message.role === "user" ? "flex-row-reverse" : "flex-row"
-                }`}
+                className={`flex items-end ${message.role === "user" ? "flex-row-reverse" : "flex-row"
+                  }`}
               >
                 <Avatar className="w-8 h-8 border">
                   <AvatarFallback className="bg-primary text-primary-foreground">
@@ -119,11 +146,10 @@ function ChatInterface() {
                   </AvatarFallback>
                 </Avatar>
                 <div
-                  className={`mx-2 py-3 px-4 rounded-lg ${
-                    message.role === "user"
+                  className={`mx-2 py-3 px-4 rounded-lg ${message.role === "user"
                       ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white"
                       : "bg-primary text-primary-foreground border"
-                  }`}
+                    }`}
                 >
                   {message.content}
                 </div>
@@ -134,6 +160,13 @@ function ChatInterface() {
         <div ref={messagesEndRef} />
       </main>
       <footer className="p-4 border-t border-border">
+        {options.length > 0 && (
+          <div className="flex flex-wrap justify-center mb-4">
+            {options.map((option, index) => (
+              <OptionTile key={index} option={option} onSelect={handleOptionSelect} />
+            ))}
+          </div>
+        )}
         <form
           onSubmit={handleSubmit}
           className="flex items-center space-x-2 lg:max-w-[40rem] mx-auto"
