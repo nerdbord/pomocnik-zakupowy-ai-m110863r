@@ -1,6 +1,6 @@
 import json
 
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpRequest
 from tavily import TavilyClient
 from firecrawl import FirecrawlApp
 from openai import OpenAI
@@ -34,8 +34,8 @@ def scrape_and_process_url(url):
 def GIGAFUNCTION(request):
     if not request.GET:
         return HttpResponse('No query found')
-    elif request.GET['query']:
-        response = tavily_client.search(request.GET['query'])
+    elif request.GET.get('query', 'I want to buy a bicycle'):
+        response = tavily_client.search(request.GET.get('query', 'I want to buy a bicycle'))
         webpages = [result['url'] for result in response['results']]
 
         with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -63,7 +63,6 @@ def GIGAFUNCTION(request):
             for value in ob.values():
                 counter += 1
                 merged["name{}".format(counter)] = value
-        print(type(merged))
         return JsonResponse(data=merged)
     else:
         return HttpResponse("How did i get here?")
