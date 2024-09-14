@@ -52,7 +52,6 @@ function ChatInterface() {
             ...assistantMessage,
             content: textContent,
           };
-          console.log(textContent);
 
           return updatedMessages;
         });
@@ -96,7 +95,7 @@ function ChatInterface() {
           <span className="sr-only">Toggle theme</span>
         </Button>
       </header>
-      <main className="flex-grow overflow-auto p-4">
+      <main className="flex-grow overflow-auto p-4 lg:w-[40rem] mx-auto">
         <AnimatePresence>
           {conversation.map((message, index) => (
             <motion.div
@@ -123,7 +122,7 @@ function ChatInterface() {
                   className={`mx-2 py-3 px-4 rounded-lg ${
                     message.role === "user"
                       ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white"
-                      : "bg-primary text-primary-foreground"
+                      : "bg-primary text-primary-foreground border"
                   }`}
                 >
                   {message.content}
@@ -135,7 +134,10 @@ function ChatInterface() {
         <div ref={messagesEndRef} />
       </main>
       <footer className="p-4 border-t border-border">
-        <form onSubmit={handleSubmit} className="flex items-center space-x-2">
+        <form
+          onSubmit={handleSubmit}
+          className="flex items-center space-x-2 lg:max-w-[40rem] mx-auto"
+        >
           <Input
             type="text"
             placeholder="Type your message..."
