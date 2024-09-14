@@ -32,9 +32,9 @@ def scrape_and_process_url(url):
 
 
 def GIGAFUNCTION(request):
-    if not request.GET['query']:
+    if not request.GET:
         return HttpResponse('No query found')
-    else:
+    elif request.GET['query']:
         response = tavily_client.search(request.GET['query'])
         webpages = [result['url'] for result in response['results']]
 
@@ -65,3 +65,5 @@ def GIGAFUNCTION(request):
                 merged["name{}".format(counter)] = value
         print(type(merged))
         return JsonResponse(data=merged)
+    else:
+        return HttpResponse("How did i get here?")
