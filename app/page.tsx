@@ -1,14 +1,17 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Message, continueConversation } from "./actions";
 import { readStreamableValue } from "ai/rsc";
 import { motion, AnimatePresence } from "framer-motion";
 import { ThemeProvider, useTheme } from "next-themes";
+import { Sun, Moon, Loader2, ShoppingBag } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Sun, Moon, Loader2, ShoppingBag } from "lucide-react";
+
+import { Message, continueConversation } from "./actions";
+import { AuthDialog } from "@/components/ui/AuthDialog";
 
 function ChatInterface() {
   const [conversation, setConversation] = useState<Message[]>([]);
@@ -71,7 +74,8 @@ function ChatInterface() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-primary text-foreground ">
+    <div className="flex flex-col h-screen bg-primary text-foreground">
+      <AuthDialog />
       <header className="flex items-center justify-between p-4 border-b border-border">
         <div className="flex items-center space-x-2">
           <div className="relative w-10 h-10">
@@ -90,12 +94,12 @@ function ChatInterface() {
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           className="rounded-full text-primary-foreground hover: hover:bg-opacity-10"
         >
-          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Sun className="absolute h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
           <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
           <span className="sr-only">Toggle theme</span>
         </Button>
       </header>
-      <main className="flex-grow overflow-auto p-4 lg:w-[40rem] mx-auto">
+      <main className="flex-grow overflow-auto p-4 lg:w-[40rem] mx-auto my-2">
         <AnimatePresence>
           {conversation.map((message, index) => (
             <motion.div
