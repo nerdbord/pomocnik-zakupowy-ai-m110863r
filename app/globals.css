@@ -20,6 +20,23 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* Background of the scrollbar track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888; /* Scrollbar color */
+  border-radius: 10px; /* Roundness of the scrollbar */ /* Space around the scrollbar */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Hover color of the scrollbar */
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
