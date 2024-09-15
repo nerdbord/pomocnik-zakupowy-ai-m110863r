@@ -140,7 +140,7 @@ export function ChatInterface() {
   const getItems = async (query: string) => {
     try {
       const res = await axios.get(
-        `https://shoppy-ai-assistant-backend.onrende.com/?query=${query}`
+        `https://shoppy-ai-assistant-backend.onrender.com/?query=${query}`
       );
 
       return res.data;
