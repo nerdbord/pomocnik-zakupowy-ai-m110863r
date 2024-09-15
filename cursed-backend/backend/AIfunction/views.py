@@ -51,7 +51,10 @@ def AI_WebSearch(request):
                     continue
 
         for i in range(len(results)):
-            results[i] = eval(re.sub(r'^```json\n|\n```$', '', results[i]).strip())
+            try:
+                results[i] = eval(re.sub(r'^```json\n|\n```$', '', results[i]).strip())
+            except Exception as e:
+                return HttpResponse(f"Something went wrong with one of the queries. Please ask Shoppy again! Error: {e}")
         output_table = results[0]
         for table in results[1:]:
             output_table.extend(table)
