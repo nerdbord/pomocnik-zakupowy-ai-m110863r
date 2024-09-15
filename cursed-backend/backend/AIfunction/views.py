@@ -17,7 +17,7 @@ def responding(markdown):
                                            messages=[
                                                {"role": "system",
                                                 "content": "You are going to be provided with scraped webpage urls and markdowns, mainly from shopping sites offering a list of items. From these markdowns, extract prices, titles of offered items, urls to offers and urls to the images of the offers. Bear in mind that urls for offers in markdowns may be partial, and have to be appended to the domain name of the shopping site. Provide answer in a table of Javascript objects format like [{'title':, 'image':, 'price':, 'url': }, {'title':, 'image':, 'price':, 'url': }, ...}]. Return any formatting improving readability. Markdowns may be cut abruptly to fit into max input limit. Provided markdowns may be from other sites or empty due to scraping errors, in which case you should ignore the input and return []. Do not add any additional commentary to your output, return just the table with JSONs"},
-                                               {"role": "user", "content": markdown}
+                                               {"role": "user", "content": "url: " + url + " | markdown: " + markdown}
                                            ]
                                            )
     return respo
@@ -26,7 +26,7 @@ def responding(markdown):
 def scrape_and_process_url(url):
     scrape_status = app.scrape_url(url, params={'formats': ["markdown"]})
     markdown = scrape_status['markdown'][:24000]
-    return "url: " + url + " | markdown: " + responding(markdown).choices[0].message.content
+    return responding(markdown).choices[0].message.content
 
 
 def AI_WebSearch(request):
