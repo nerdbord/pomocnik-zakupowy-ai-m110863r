@@ -51,13 +51,9 @@ def AI_WebSearch(request):
 
         for i in range(len(results)):
             results[i] = eval(re.sub(r'^```json\n|\n```$', '', results[i]).strip())
-        for i in results:
-            print(type(i),i)
-        print("--------"*1500)
         output_table = results[0]
         for table in results[1:]:
             output_table.extend(table)
-        print(output_table, output_table[0], type(output_table), type(output_table[0]))
         return JsonResponse(output_table, safe=False)
     else:
         return HttpResponse("No 'query' parameter found")
