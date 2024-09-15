@@ -38,8 +38,6 @@ def AI_WebSearch(request):
 
         response = tavily_client.search(request.GET.get('query', 'I want to buy a bicycle'))
         webpages = [result['url'] for result in response['results']]
-        webpages = ['https://www.zappos.com/heels']
-
 
         with concurrent.futures.ThreadPoolExecutor() as executor:
             future_to_url = {executor.submit(scrape_and_process_url, url): url for url in webpages}
