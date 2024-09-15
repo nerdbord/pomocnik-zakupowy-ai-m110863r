@@ -213,17 +213,19 @@ export function ChatInterface() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3 }}
-                  className="flex flex-wrap justify-center gap-2 max-w-md mx-auto"
+                  className="flex flex-wrap justify-center gap-2 mx-auto"
                 >
-                  {categories.map((category, index) => (
-                    <Button
-                      key={index}
-                      onClick={() => handleCategorySelect(category)}
-                      className="bg-indigo-500 text-white hover:bg-indigo-600"
-                    >
-                      {category}
-                    </Button>
-                  ))}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 my-4">
+                    {categories.map((category) => (
+                      <Button
+                        key={category}
+                        onClick={() => handleCategorySelect(category)}
+                        className="p-2 bg-white text-gray-800 dark:bg-gray-700 dark:text-white hover:bg-indigo-100 dark:hover:bg-indigo-800"
+                      >
+                        {category}
+                      </Button>
+                    ))}
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
