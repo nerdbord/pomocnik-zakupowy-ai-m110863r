@@ -45,7 +45,7 @@ export function Header() {
               onClick={() => signIn()}
               className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-full px-6 py-2 font-semibold transition-all duration-200 hover:from-indigo-600 hover:to-purple-600"
             >
-              Sign in
+              Logowanie
             </Button>
           )}
         </div>

@@ -1,14 +1,11 @@
-
-
-
 export const categories = [
   "Ubrania", "Buty", "Meble", "Akcesoria do domu", "Elektronika",
-  "Książki", "Sport i rekreacja", "Kosmetyki", "Zabawki", "Biżuteria"
+  "Książki", "Sport i rekreacja", "Kosmetyki", "Zabawki", "Biżuteria", "Inne",
 ] as const;
 
 export type Category = typeof categories[number];
 
-export const subcategories: Record<Category, string[]> = {
+export const subcategories: Record<Exclude<Category, "Inne">, string[]> = {
   "Kosmetyki": ["Do włosów", "Do twarzy", "Do ciała", "Do makijażu", "Do paznokci"],
   "Ubrania": ["Koszulki", "Spodnie", "Sukienki", "Kurtki", "Bielizna"],
   "Buty": ["Sportowe", "Eleganckie", "Casualowe", "Zimowe", "Sandały"],
@@ -18,10 +15,12 @@ export const subcategories: Record<Category, string[]> = {
   "Książki": ["Beletrystyka", "Kryminały", "Fantastyka", "Biografie", "Poradniki"],
   "Sport i rekreacja": ["Fitness", "Sporty zimowe", "Sporty wodne", "Turystyka", "Rowery"],
   "Zabawki": ["Klocki", "Lalki", "Gry planszowe", "Zabawki edukacyjne", "Zabawki elektroniczne"],
-  "Biżuteria": ["Naszyjniki", "Pierścionki", "Bransoletki", "Kolczyki", "Zegarki"]
+  "Biżuteria": ["Naszyjniki", "Pierścionki", "Bransoletki", "Kolczyki", "Zegarki"],
+
 };
 
-export const questionsBySubcategory = {
+
+export const questionsBySubcategory: Record<string, Array<{ question: string; options: string[] }>> = {
   "Do włosów": [
     { question: "Typ włosów:", options: ["Proste", "Kręcone", "Falowane"] },
     { question: "Kolor włosów:", options: ["Blond", "Czarne", "Brązowe", "Siwe"] },
