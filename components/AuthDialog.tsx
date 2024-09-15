@@ -21,7 +21,7 @@ export function AuthDialog() {
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] bg-primary text-primary-foreground">
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
             Welcome to{" "}
@@ -39,7 +39,7 @@ export function AuthDialog() {
         </Button>
         <span className="block text-center mt-4">or</span>
         <DialogTrigger asChild>
-          <Button variant="link" className="mt-2 text-primary-foreground">
+          <Button variant="link" className="mt-2">
             Continue without account
           </Button>
         </DialogTrigger>

@@ -4,6 +4,12 @@ import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import { getInitials } from "@/helpers/helpers";
 
@@ -34,12 +40,24 @@ export function Header() {
             <span className="sr-only">Przełącz motyw</span>
           </Button>
           {session?.user?.name ? (
-            <Avatar className="cursor-pointer" onClick={() => signOut()}>
-              <AvatarImage src={session?.user?.image ?? ""} alt="avatar" />
-              <AvatarFallback className="bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200">
-                {getInitials(session?.user?.name)}
-              </AvatarFallback>
-            </Avatar>
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Avatar>
+                  <AvatarImage src={session?.user?.image ?? ""} alt="avatar" />
+                  <AvatarFallback className="bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200">
+                    {getInitials(session?.user?.name)}
+                  </AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => signOut()}
+                >
+                  Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
             <Button
               onClick={() => signIn()}
