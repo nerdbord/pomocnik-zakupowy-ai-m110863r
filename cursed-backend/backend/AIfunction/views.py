@@ -31,7 +31,7 @@ def scrape_and_process_url(url):
     return responding(markdown).choices[0].message.content
 
 
-def GIGAFUNCTION(request):
+def AI_WebSearch(request):
     if not request.GET:
         return HttpResponse('No query found')
     elif request.GET.get('query', None):
