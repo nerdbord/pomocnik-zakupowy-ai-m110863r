@@ -48,12 +48,15 @@ def GIGAFUNCTION(request):
                 except Exception as exc:
                     print(f'URL generated an exception: {exc}')
 
+        for i in range(len(results)):
+            results[i] = eval(re.sub(r'^```json\n|\n```$', '', results[i]).strip())
+            print(type(results[i]))
+
         print(results)
         output_table = results[0]
         for table in results[1:]:
             output_table.extend(table)
         print(output_table)
         return HttpResponse(output_table)
-
     else:
-        return HttpResponse("How did i get here?")
+        return HttpResponse("No 'query' parameter found")
