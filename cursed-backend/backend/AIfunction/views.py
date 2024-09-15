@@ -26,13 +26,16 @@ def responding(markdown):
 def scrape_and_process_url(url):
     scrape_status = app.scrape_url(url, params={'formats': ["markdown"]})
     markdown = scrape_status['markdown'][:24000]
-    return responding(markdown).choices[0].message.content
+    return "url: " + url + " | markdown: " + responding(markdown).choices[0].message.content
 
 
 def AI_WebSearch(request):
     if not request.GET:
         return HttpResponse('No query found')
     elif request.GET.get('query', None):
+        if len(request.GET.get('query', None)) < 5:
+            return HttpResponse('Query too short')
+
         response = tavily_client.search(request.GET.get('query', 'I want to buy a bicycle'))
         webpages = [result['url'] for result in response['results']]
         webpages = ['https://www.zappos.com/heels']
