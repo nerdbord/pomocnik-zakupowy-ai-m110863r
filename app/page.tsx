@@ -10,7 +10,7 @@ export default function Home() {
   const { data: session } = useSession();
 
   return (
-    <div className="flex flex-col h-screen bg-primary text-foreground">
+    <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900">
       {session?.user?.name ||
       localStorage.getItem("authDialogOpened") === "true" ? null : (
         <AuthDialog />

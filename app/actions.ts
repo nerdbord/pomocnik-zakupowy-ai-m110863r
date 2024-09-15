@@ -15,12 +15,12 @@ export async function continueConversation(history: Message[]) {
   const stream = createStreamableValue();
 
   (async () => {
-    console.log("Starting conversation continuation"); // Debug log
+    console.log("Rozpoczęcie kontynuacji konwersacji");
 
     const { textStream } = await streamText({
-      model: openai("gpt-4o"),
+      model: openai("gpt-3.5-turbo"),
       system:
-        "You are an internet shopping assistant. Ask proper questions to get the best results. You can ask about products, prices, availability, and more. Be specific. ALWAYS provide 2-4 options for the user to choose from by adding a line at the end of your message in the exact format 'OPTIONS: [option1, option2, option3]'. The OPTIONS line should be on a new line at the very end of your message. Create the final search query when you have all the information you need.",
+        "Jesteś polskojęzycznym asystentem zakupowym. Zadawaj odpowiednie pytania, aby uzyskać najlepsze wyniki. Możesz pytać o produkty, ceny, dostępność i więcej. Bądź konkretny. Stwórz końcowe zapytanie wyszukiwania, gdy będziesz mieć wszystkie potrzebne informacje. KOMUNIKUJ SIĘ WYŁĄCZNIE PO POLSKU. Twoim celem jest na podstawie wywiadu z użytkownikiem skonstruowanie query stringa do odpytania internetu",
       messages: history,
     });
 
@@ -29,14 +29,10 @@ export async function continueConversation(history: Message[]) {
     for await (const text of textStream) {
       fullResponse += text;
       stream.update(text);
-
-      // Debug log to check if OPTIONS are being generated
-      if (fullResponse.includes("OPTIONS:")) {
-        console.log("Options detected in response:", fullResponse);
-      }
+      console.log("Częściowa odpowiedź:", text);
     }
 
-    console.log("Full response:", fullResponse); // Debug log for the entire response
+    console.log("Pełna odpowiedź:", fullResponse);
 
     stream.done();
   })();
@@ -44,5 +40,20 @@ export async function continueConversation(history: Message[]) {
   return {
     messages: history,
     newMessage: stream.value,
+  };
+}
+
+export async function exampleServerAction(message: string) {
+  "use server";
+
+  console.log(
+    "Przykładowa akcja serwerowa została wywołana z wiadomością:",
+    message
+  );
+
+  // Tutaj możesz dodać logikę przetwarzania wiadomości
+
+  return {
+    response: `Serwer otrzymał wiadomość: "${message}" i ją przetworzyłem.`,
   };
 }
