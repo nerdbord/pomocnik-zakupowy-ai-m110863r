@@ -1,6 +1,4 @@
-import json
-
-from django.http import JsonResponse, HttpResponse, HttpRequest
+from django.http import JsonResponse, HttpResponse
 from tavily import TavilyClient
 from firecrawl import FirecrawlApp
 from openai import OpenAI
@@ -37,6 +35,8 @@ def AI_WebSearch(request):
     elif request.GET.get('query', None):
         response = tavily_client.search(request.GET.get('query', 'I want to buy a bicycle'))
         webpages = [result['url'] for result in response['results']]
+        webpages = ['https://www.zappos.com/heels']
+
 
         with concurrent.futures.ThreadPoolExecutor() as executor:
             future_to_url = {executor.submit(scrape_and_process_url, url): url for url in webpages}
@@ -46,17 +46,18 @@ def AI_WebSearch(request):
                     result = future.result()
                     results.append(result)
                 except Exception as exc:
-                    print(f'URL generated an exception: {exc}')
+                    print(exc)
+                    continue
 
         for i in range(len(results)):
             results[i] = eval(re.sub(r'^```json\n|\n```$', '', results[i]).strip())
-            print(type(results[i]))
-
-        print(results)
+        for i in results:
+            print(type(i),i)
+        print("--------"*1500)
         output_table = results[0]
         for table in results[1:]:
             output_table.extend(table)
-        print(output_table)
-        return HttpResponse(output_table)
+        print(output_table, output_table[0], type(output_table), type(output_table[0]))
+        return JsonResponse(output_table, safe=False)
     else:
         return HttpResponse("No 'query' parameter found")
