@@ -46,11 +46,14 @@ export async function continueConversation(history: Message[]) {
 export async function exampleServerAction(message: string) {
   "use server";
 
-  console.log("Przykładowa akcja serwerowa została wywołana z wiadomością:", message);
+  console.log(
+    "Przykładowa akcja serwerowa została wywołana z wiadomością:",
+    message
+  );
 
   // Tutaj możesz dodać logikę przetwarzania wiadomości
 
   return {
-    response: `Serwer otrzymał wiadomość: "${message}" i ją przetworzyłem.`
+    response: `Serwer otrzymał wiadomość: "${message}" i ją przetworzyłem.`,
   };
 }
