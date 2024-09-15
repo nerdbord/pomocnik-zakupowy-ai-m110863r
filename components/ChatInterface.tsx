@@ -298,7 +298,7 @@ export function ChatInterface() {
             className="flex flex-col items-center justify-center bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-lg p-2 transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             <MessageSquarePlus className="h-6 w-6 mb-1" />
-            <span className="text-xs">New Chat</span>
+            <span className="text-xs">Nowy chat</span>
           </Button>
         </form>
       </footer>
