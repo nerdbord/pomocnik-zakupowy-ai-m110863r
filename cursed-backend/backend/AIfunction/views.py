@@ -18,7 +18,7 @@ def responding(markdown):
     respo = client.chat.completions.create(model="gpt-4o-mini",
                                            messages=[
                                                {"role": "system",
-                                                "content": "You are going to be provided with scraped webpage urls and markdowns, mainly from shopping sites offering a list of items. From these markdowns, extract prices, titles of offered items, urls to offers and urls to the images of the offers. Bear in mind that urls for offers in markdowns may be partial, and have to be appended to the domain name of the shopping site. Provide answer in JSON format like {'item1':{'title':, 'image':, 'price':, 'url': }, 'item2'{'title':, 'image':, 'price':, 'url': } 'item3': ...}. Return any formatting improving readability. Markdowns may be cut abruptly to fit into max input limit. Provided markdowns may be from other sites or empty due to scraping errors, in which case you should ignore the input and return {}. Do not add any additional commentary to your output, return just the JSON"},
+                                                "content": "You are going to be provided with scraped webpage urls and markdowns, mainly from shopping sites offering a list of items. From these markdowns, extract prices, titles of offered items, urls to offers and urls to the images of the offers. Bear in mind that urls for offers in markdowns may be partial, and have to be appended to the domain name of the shopping site. Provide answer in a table of Javascript objects format like [{'title':, 'image':, 'price':, 'url': }, {'title':, 'image':, 'price':, 'url': }, ...}]. Return any formatting improving readability. Markdowns may be cut abruptly to fit into max input limit. Provided markdowns may be from other sites or empty due to scraping errors, in which case you should ignore the input and return []. Do not add any additional commentary to your output, return just the table with JSONs"},
                                                {"role": "user", "content": markdown}
                                            ]
                                            )
@@ -48,21 +48,12 @@ def GIGAFUNCTION(request):
                 except Exception as exc:
                     print(f'URL generated an exception: {exc}')
 
-        jsons = []
-        for i in results:
-            if i == '{}':
-                continue
-            else:
-                cleaned_string = re.sub(r'^```json\n|\n```$', '', i).strip()
-                jsonob = json.loads(cleaned_string)
-                jsons.append(jsonob)
+        print(results)
+        output_table = results[0]
+        for table in results[1:]:
+            output_table.extend(table)
+        print(output_table)
+        return HttpResponse(output_table)
 
-        merged = {}
-        counter = 0
-        for ob in jsons:
-            for value in ob.values():
-                counter += 1
-                merged["name{}".format(counter)] = value
-        return JsonResponse(data=merged)
     else:
         return HttpResponse("How did i get here?")
