@@ -20,19 +20,13 @@ export async function continueConversation(history: Message[]) {
     const { textStream } = await streamText({
       model: openai("gpt-3.5-turbo"),
       system:
-        "Jesteś polskojęzycznym asystentem zakupowym. Zadawaj odpowiednie pytania, aby uzyskać najlepsze wyniki. Możesz pytać o produkty, ceny, dostępność i więcej. Bądź konkretny. Stwórz końcowe zapytanie wyszukiwania, gdy będziesz mieć wszystkie potrzebne informacje. KOMUNIKUJ SIĘ WYŁĄCZNIE PO POLSKU. Twoim celem jest na podstawie wywiadu z użytkownikiem skonstruowanie query stringa do odpytania internetu",
+        "Jesteś polskojęzycznym asystentem zakupowym. Zadawaj odpowiednie pytania, aby uzyskać najlepsze wyniki. Możesz pytać o produkty, ceny, dostępność i więcej. Bądź dociekliwy i doprecyzowuj. KOMUNIKUJ SIĘ WYŁĄCZNIE PO POLSKU. Nie zadawaj pytań dłuższych niż 200 znaków. Twoim celem jest na podstawie wywiadu z użytkownikiem skonstruowanie query stringa do odpytania internetu. Twoim celem jest zrozumienie potrzeb użytkownika i skonstruowanie odpowiedniego zapytania do wyszukiwarki. Kiedy będziesz miał wszystkie informacje zwróć w apostrofie TYLKO idealne query do odpytania wyszukiwarki. Na wzór: 'czerwona koszulka xl męska 600zł adidas'. W apostrofach nie zadawaj już pytań. W apostrofach musi być min 5 znaków",
       messages: history,
     });
 
-    let fullResponse = "";
-
     for await (const text of textStream) {
-      fullResponse += text;
       stream.update(text);
-      console.log("Częściowa odpowiedź:", text);
     }
-
-    console.log("Pełna odpowiedź:", fullResponse);
 
     stream.done();
   })();
@@ -45,13 +39,6 @@ export async function continueConversation(history: Message[]) {
 
 export async function exampleServerAction(message: string) {
   "use server";
-
-  console.log(
-    "Przykładowa akcja serwerowa została wywołana z wiadomością:",
-    message
-  );
-
-  // Tutaj możesz dodać logikę przetwarzania wiadomości
 
   return {
     response: `Serwer otrzymał wiadomość: "${message}" i ją przetworzyłem.`,

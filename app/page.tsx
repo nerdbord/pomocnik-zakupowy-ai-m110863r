@@ -11,13 +11,11 @@ export default function Home() {
   return (
     <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900">
       {session?.user?.name ||
-        localStorage.getItem("authDialogOpened") === "true" ? null : (
+      localStorage.getItem("authDialogOpened") === "true" ? null : (
         <AuthDialog />
       )}
       <Header />
-      <main className="flex-grow flex justify-center items-center p-4">
-        <ChatInterface />
-      </main>
+      <ChatInterface />
     </div>
   );
 }
