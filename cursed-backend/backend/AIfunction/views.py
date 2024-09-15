@@ -5,6 +5,7 @@ from openai import OpenAI
 import concurrent.futures
 import re
 import os
+from requests.exceptions import HTTPError
 
 
 app = FirecrawlApp(os.getenv("Fckey"))
@@ -24,7 +25,10 @@ def responding(markdown, url):
 
 
 def scrape_and_process_url(url):
-    scrape_status = app.scrape_url(url, params={'formats': ["markdown"]})
+    try:
+        scrape_status = app.scrape_url(url, params={'formats': ["markdown"]})
+    except HTTPError:
+        "Something went wrong with getting the offers, please try in a minute. If problem persists, contact RAPID ARCHITECTS :)"
     markdown = scrape_status['markdown'][:24000]
     return responding(markdown, url).choices[0].message.content
 
@@ -51,7 +55,10 @@ def AI_WebSearch(request):
                     continue
 
         for i in range(len(results)):
-            results[i] = eval(re.sub(r'^```json\n|\n```$', '', results[i]).strip())
+            try:
+                results[i] = eval(re.sub(r'^```json\n|\n```$', '', results[i]).strip())
+            except Exception as e:
+                return HttpResponse(f"Something went wrong with one of the queries. Please ask Shoppy again! Error: {e}")
         output_table = results[0]
         for table in results[1:]:
             output_table.extend(table)

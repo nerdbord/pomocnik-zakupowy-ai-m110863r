@@ -53,6 +53,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
 CORS_ALLOW_ALL_ORIGINS = os.getenv("CORSALLOWALL")
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
