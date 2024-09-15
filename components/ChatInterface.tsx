@@ -9,11 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { getInitials } from "@/helpers/helpers";
-import {
-  categories,
-  subcategories,
-  questionsBySubcategory,
-} from "@/helpers/categoryData";
+import { categories } from "@/helpers/categoryData";
 
 import { Message, continueConversation } from "@/app/actions";
 
