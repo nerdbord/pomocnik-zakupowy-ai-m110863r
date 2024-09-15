@@ -12,7 +12,7 @@ client = OpenAI()
 tavily_client = TavilyClient(os.getenv("tavilykey"))
 
 
-def responding(markdown):
+def responding(markdown, url):
     respo = client.chat.completions.create(model="gpt-4o-mini",
                                            messages=[
                                                {"role": "system",
@@ -26,7 +26,7 @@ def responding(markdown):
 def scrape_and_process_url(url):
     scrape_status = app.scrape_url(url, params={'formats': ["markdown"]})
     markdown = scrape_status['markdown'][:24000]
-    return responding(markdown).choices[0].message.content
+    return responding(markdown, url).choices[0].message.content
 
 
 def AI_WebSearch(request):
