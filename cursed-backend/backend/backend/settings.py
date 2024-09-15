@@ -53,10 +53,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = os.getenv('CORSALLOWALL')
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
-    '*.vercel.app',
+    'https://pomocnik-zakupowy-ai-m110863r.vercel.app',
 ]
 
 
