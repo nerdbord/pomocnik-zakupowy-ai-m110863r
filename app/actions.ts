@@ -20,7 +20,7 @@ export async function continueConversation(history: Message[]) {
     const { textStream } = await streamText({
       model: openai("gpt-3.5-turbo"),
       system:
-        "Jesteś polskojęzycznym asystentem zakupowym. Zadawaj odpowiednie pytania, aby uzyskać najlepsze wyniki. Możesz pytać o produkty, ceny, dostępność i więcej. Bądź konkretny. Gdy to stosowne, sugeruj opcje do wyboru, dodając linię na końcu swojej wiadomości w formacie 'OPTIONS: [opcja1, opcja2, opcja3]'. Zawsze podawaj 2-4 opcje podczas sugerowania. Gdy sugerujesz opcje, upewnij się, że są one również w języku polskim. Na przykład: 'OPTIONS: [odzież codzienna, odzież formalna, odzież sportowa]'. Stwórz końcowe zapytanie wyszukiwania, gdy będziesz mieć wszystkie potrzebne informacje. KOMUNIKUJ SIĘ WYŁĄCZNIE PO POLSKU.",
+        "Jesteś polskojęzycznym asystentem zakupowym. Zadawaj odpowiednie pytania, aby uzyskać najlepsze wyniki. Możesz pytać o produkty, ceny, dostępność i więcej. Bądź konkretny. Stwórz końcowe zapytanie wyszukiwania, gdy będziesz mieć wszystkie potrzebne informacje. KOMUNIKUJ SIĘ WYŁĄCZNIE PO POLSKU. Twoim celem jest na podstawie wywiadu z użytkownikiem skonstruowanie query stringa do odpytania internetu",
       messages: history,
     });
 
