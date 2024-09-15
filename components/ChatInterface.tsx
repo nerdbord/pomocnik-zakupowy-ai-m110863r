@@ -15,6 +15,7 @@ import { getInitials } from "@/helpers/helpers";
 import { categories } from "@/helpers/categoryData";
 
 import { Message, continueConversation } from "@/app/actions";
+import ShoppyLoader from "./ShoppyLoader";
 
 interface Item {
   title: string;
@@ -139,7 +140,7 @@ export function ChatInterface() {
   const getItems = async (query: string) => {
     try {
       const res = await axios.get(
-        `https://shoppy-ai-assistant-backend.onrender.com/?query=${query}`
+        `https://shoppy-ai-assistant-backend.onrende.com/?query=${query}`
       );
 
       return res.data;
@@ -276,45 +277,56 @@ export function ChatInterface() {
               exit={{ width: 0, opacity: 0 }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
             >
-              <div className="p-6">
+              <div className="p-6 h-full">
                 <h2 className="font-semibold text-gray-700 dark:text-gray-200 mb-4">
                   Wyniki wyszukiwania
                 </h2>
                 {isItemsLoading ? (
-                  <div className="flex justify-center items-center h-64">
-                    <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
+                  <div className="flex justify-center items-center h-full">
+                    <ShoppyLoader />
                   </div>
                 ) : (
                   <div className="grid grid-cols-3 gap-4 overflow-y-scroll">
-                    {items.map((item, i) => (
-                      <motion.div
-                        key={i}
-                        className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <a
-                          href={item.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                    {items.length > 0 ? (
+                      items.map((item, i) => (
+                        <motion.div
+                          key={i}
+                          className="bg-gray-100 dark:bg-gray-700 rounded-lg"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3 }}
                         >
-                          <p className="font-semibold text-gray-700 dark:text-gray-200 mb-2">
-                            {item.title}
-                          </p>
-                          <img
-                            src={item.image}
-                            alt={item.title}
-                            width={500}
-                            height={500}
-                            className="rounded-lg"
-                          />
-                          <p className="font-semibold text-xl text-indigo-500 mt-2">
-                            {item.price} zł
-                          </p>
-                        </a>
-                      </motion.div>
-                    ))}
+                          <a
+                            href={item.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex flex-col justify-between h-full p-4  hover:shadow-xl dark:hover:shadow-gray-700 transition-all duration-200"
+                          >
+                            <p className="font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                              {item.title}
+                            </p>
+                            <div>
+                              <img
+                                src={item.image}
+                                alt={item.title}
+                                width={500}
+                                height={500}
+                                className="rounded-lg"
+                              />
+                              <p className="font-semibold text-xl text-indigo-500 mt-2">
+                                {item.price} zł
+                              </p>
+                            </div>
+                          </a>
+                        </motion.div>
+                      ))
+                    ) : (
+                      <div className="">
+                        <p className="text-gray-700 dark:text-gray-200">
+                          Brak wyników
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
