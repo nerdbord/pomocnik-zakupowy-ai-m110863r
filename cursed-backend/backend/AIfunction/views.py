@@ -17,7 +17,7 @@ def responding(markdown):
                                            messages=[
                                                {"role": "system",
                                                 "content": "You are going to be provided with scraped webpage urls and markdowns, mainly from shopping sites offering a list of items. From these markdowns, extract prices, titles of offered items, urls to offers and urls to the images of the offers. Bear in mind that urls for offers in markdowns may be partial, and have to be appended to the domain name of the shopping site. Provide answer in a table of Javascript objects format like [{'title':, 'image':, 'price':, 'url': }, {'title':, 'image':, 'price':, 'url': }, ...}]. Return any formatting improving readability. Markdowns may be cut abruptly to fit into max input limit. Provided markdowns may be from other sites or empty due to scraping errors, in which case you should ignore the input and return []. Do not add any additional commentary to your output, return just the table with JSONs"},
-                                               {"role": "user", "content": markdown}
+                                               {"role": "user", "content": "url: " + url + " | markdown: " + markdown}
                                            ]
                                            )
     return respo
@@ -33,6 +33,9 @@ def AI_WebSearch(request):
     if not request.GET:
         return HttpResponse('No query found')
     elif request.GET.get('query', None):
+        if len(request.GET.get('query', None)) < 5:
+            return HttpResponse('Query too short')
+
         response = tavily_client.search(request.GET.get('query', 'I want to buy a bicycle'))
         webpages = [result['url'] for result in response['results']]
         webpages = ['https://www.zappos.com/heels']
