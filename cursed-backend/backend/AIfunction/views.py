@@ -28,7 +28,7 @@ def scrape_and_process_url(url):
     try:
         scrape_status = app.scrape_url(url, params={'formats': ["markdown"]})
     except HTTPError:
-        "Something went wrong with getting the offers, please try in a minute. If problem persists, contact RAPID ARCHITECTS :)"
+        return HttpResponse("Something went wrong with getting the offers, please try in a minute. If problem persists, contact RAPID ARCHITECTS :)")
     markdown = scrape_status['markdown'][:24000]
     return responding(markdown, url).choices[0].message.content
 
