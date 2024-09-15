@@ -2,5 +2,5 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
-    path('', views.GIGAFUNCTION),
+    path('', views.AI_WebSearch),
 ]

@@ -26,7 +26,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app', 'shoppy-ai-assistant-backend.onrender.com', '.vercel.app']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.vercel.app', 'shoppy-ai-assistant-backend.onrender.com']
 
 
 # Application definition
@@ -39,13 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'AIfunction.apps.AifunctionConfig',
-    'corsheaders',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -53,12 +53,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CORS_ALLOW_ALL_ORIGINS = os.getenv("CORSALLOWALL")
 CORS_ALLOWED_ORIGINS = [
-    "*.vercel.app",
-    "https://shoppy-ai-assistant-backend.onrender.com",
-    "http://localhost:3000",
-    "http://127.0.0.1:8000",
+    'http://localhost:3000',
+    'https://pomocnik-zakupowy-ai-m110863r.vercel.app',
 ]
+
 
 ROOT_URLCONF = 'backend.urls'
 
